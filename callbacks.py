@@ -7,6 +7,52 @@ from ctypes import *
 from tox import bin_to_string
 
 
+def tox_factory(data=None, settings=None):
+    """
+    :param data: user data from .tox file. None = no saved data, create new profile
+    :param settings: current profile settings. None = default settings will be used
+    :return: new tox instance
+    """
+    if settings is None:
+        settings = {
+            'ipv6_enabled': True,
+            'udp_enabled': True,
+            'proxy_type': 0,
+            'proxy_host': 0,
+            'proxy_port': 0,
+            'start_port': 0,
+            'end_port': 0,
+            'tcp_port': 0
+        }
+    tox_options = Tox.options_new()
+    tox_options.contents.udp_enabled = settings['udp_enabled']
+    tox_options.contents.proxy_type = settings['proxy_type']
+    tox_options.contents.proxy_host = settings['proxy_host']
+    tox_options.contents.proxy_port = settings['proxy_port']
+    tox_options.contents.start_port = settings['start_port']
+    tox_options.contents.end_port = settings['end_port']
+    tox_options.contents.tcp_port = settings['tcp_port']
+    if data:  # load existing profile
+        tox_options.contents.savedata_type = TOX_SAVEDATA_TYPE['TOX_SAVE']
+        tox_options.contents.savedata_data = c_char_p(data)
+        tox_options.contents.savedata_length = len(data)
+    else:  # create new profile
+        tox_options.contents.savedata_type = TOX_SAVEDATA_TYPE['NONE']
+        tox_options.contents.savedata_data = None
+        tox_options.contents.savedata_length = 0
+    return Tox(tox_options)
+
+
+if os.path.isfile("profil.tox"): 
+    print ("mevcut profil açılıyor.")
+    toxer = tox_factory(ProfileHelper.open_profile("profil.tox"))
+else:
+    print ("yeni profil açılıyor.")
+    toxer= tox_factory(None,None)
+    data = toxer.get_savedata()
+    ProfileHelper.save_profile(data)
+
+
 # -----------------------------------------------------------------------------------------------------------------
 # Callbacks - current user
 # -----------------------------------------------------------------------------------------------------------------
@@ -53,7 +99,7 @@ def friend_request(tox,public_key, message, message_size, user_data):
     tox_id = bin_to_string(key, TOX_PUBLIC_KEY_SIZE)
     #profile.process_friend_request(tox_id, message.decode('utf-8'))
     print('Dugum baglantı isteği:', message)
-    toxer = tox_factory(ProfileHelper.open_profile("profil.tox"))
+    
     toxer.friend_add_norequest(tox_id)
     data = toxer.get_savedata()
     ProfileHelper.save_profile(data)
@@ -74,6 +120,8 @@ def tox_file_recv(tox_link):
         if file_type == TOX_FILE_KIND['DATA']:
             print('dosya gonderme istegi geldi',friend_number,"dan")
             file_name = str(file_name[:file_name_size].decode('utf-8'))
+            
+            
             ##profile.incoming_file_transfer(friend_number, file_number, size, file_name)
         else:  # AVATAR
             tox_link.file_control(friend_number, file_number, TOX_FILE_CONTROL['CANCEL'])
@@ -135,37 +183,3 @@ def init_callbacks(tox):
     tox.callback_file_chunk_request(file_chunk_request, 0)
     tox.callback_file_recv_control(file_recv_control, 0)
 
-def tox_factory(data=None, settings=None):
-    """
-    :param data: user data from .tox file. None = no saved data, create new profile
-    :param settings: current profile settings. None = default settings will be used
-    :return: new tox instance
-    """
-    if settings is None:
-        settings = {
-            'ipv6_enabled': True,
-            'udp_enabled': True,
-            'proxy_type': 0,
-            'proxy_host': 0,
-            'proxy_port': 0,
-            'start_port': 0,
-            'end_port': 0,
-            'tcp_port': 0
-        }
-    tox_options = Tox.options_new()
-    tox_options.contents.udp_enabled = settings['udp_enabled']
-    tox_options.contents.proxy_type = settings['proxy_type']
-    tox_options.contents.proxy_host = settings['proxy_host']
-    tox_options.contents.proxy_port = settings['proxy_port']
-    tox_options.contents.start_port = settings['start_port']
-    tox_options.contents.end_port = settings['end_port']
-    tox_options.contents.tcp_port = settings['tcp_port']
-    if data:  # load existing profile
-        tox_options.contents.savedata_type = TOX_SAVEDATA_TYPE['TOX_SAVE']
-        tox_options.contents.savedata_data = c_char_p(data)
-        tox_options.contents.savedata_length = len(data)
-    else:  # create new profile
-        tox_options.contents.savedata_type = TOX_SAVEDATA_TYPE['NONE']
-        tox_options.contents.savedata_data = None
-        tox_options.contents.savedata_length = 0
-    return Tox(tox_options)

@@ -23,7 +23,7 @@ else:
     tox = tox_factory(None,None)
     data = tox.get_savedata()
     ProfileHelper.save_profile(data)
-sonek=str(tox.self_get_address())[0:2]
+sonek=str(tox.self_get_address())[0:4]
 
 
 @asyncio.coroutine

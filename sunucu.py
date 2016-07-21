@@ -15,7 +15,14 @@ from settings import *
 from aiohttp import web
 
 global tox
-tox = tox_factory(ProfileHelper.open_profile("profil.tox"))
+if os.path.isfile("profil.tox"): 
+    print ("mevcut profil açılıyor.")
+    tox = tox_factory(ProfileHelper.open_profile("profil.tox"))
+else:
+    print ("yeni profil açılıyor.")
+    tox = tox_factory(None,None)
+    data = tox.get_savedata()
+    ProfileHelper.save_profile(data)
 sonek=str(tox.self_get_address())[0:2]
 
 

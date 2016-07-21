@@ -62,6 +62,11 @@ class ProfileHelper(object):
 
     @staticmethod
     def save_profile(data):
+        if hasattr(ProfileHelper, '_path'):
+            print ("mevcut profile kayıt ediliyor.")
+        else:
+            ProfileHelper._path="profil.tox"
+			
         with open(ProfileHelper._path, 'wb') as fl:
             fl.write(data)
 

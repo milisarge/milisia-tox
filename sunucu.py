@@ -71,10 +71,16 @@ def flist(request):
 @asyncio.coroutine
 def toxloop():
 	global tox
-	global loop
 	while 1==1:
 		tox.iterate()
 		time.sleep(tox.iteration_interval() / 1000.0)
+		
+		if(os.path.isfile("yenidugum")):
+			tox.friend_add_norequest(open("yenidugum","r").read())
+			data = tox.get_savedata()
+			ProfileHelper.save_profile(data)
+			os.system("rm yenidugum") 
+		
 		#print (tox.self_get_connection_status())
 		yield from asyncio.sleep(0.05)
 @asyncio.coroutine

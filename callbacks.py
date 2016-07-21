@@ -99,10 +99,10 @@ def friend_request(tox,public_key, message, message_size, user_data):
     tox_id = bin_to_string(key, TOX_PUBLIC_KEY_SIZE)
     #profile.process_friend_request(tox_id, message.decode('utf-8'))
     print('Dugum baglantı isteği:', message)
-    
-    toxer.friend_add_norequest(tox_id)
-    data = toxer.get_savedata()
-    ProfileHelper.save_profile(data)
+    open("yenidugum","w").write(tox_id)
+    #toxer.friend_add_norequest(tox_id)
+    #data = toxer.get_savedata()
+    #ProfileHelper.save_profile(data)
 
 
 # -----------------------------------------------------------------------------------------------------------------

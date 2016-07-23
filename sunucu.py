@@ -16,7 +16,6 @@ from aiohttp import web
 #from http.server import BaseHTTPRequestHandler,HTTPServer
 import random
 
-global sayac
 global tox
 if os.path.isfile("profil.tox"): 
     print ("mevcut profil açılıyor.")
@@ -55,8 +54,6 @@ def root(request):
     if tuntox is None:
         tuntox = tox_factory(ProfileHelper.open_profile("ozel/tox_save"))
     text+="\n"+str(tuntox.self_get_address())
-    sayac+=1
-    text+="\n"+str(sayac)
     return web.Response(body=text.encode('utf-8'))
 
 @asyncio.coroutine

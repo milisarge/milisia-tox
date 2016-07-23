@@ -13,7 +13,8 @@ from bootstrap import node_generator
 from settings import *
 import subprocess
 from aiohttp import web
-from http.server import BaseHTTPRequestHandler,HTTPServer
+#from http.server import BaseHTTPRequestHandler,HTTPServer
+import random
 
 global tox
 if os.path.isfile("profil.tox"): 
@@ -26,9 +27,16 @@ else:
     ProfileHelper.save_profile(data)
 sonek=str(tox.self_get_address())[0:4]
 
+global tuntox
+if os.path.isfile("ozel/tox_save"): 
+    print ("tuntox profili açılıyor.")
+    tuntox = tox_factory(ProfileHelper.open_profile("ozel/tox_save"))
+else:
+    print ("tuntox sunucu'da sorun var.")
+
 @asyncio.coroutine
 def paysun():
-    port=8009
+    port=33999
     komut="cd paylasim && python3 -m http.server "+str(port)
     durum=yield from komutar(komut)
     if durum:
@@ -37,8 +45,10 @@ def paysun():
 
 @asyncio.coroutine
 def root(request):
-    text = "milis-tox network"
+    text = "milisia-dugum adresi"
     text+="\n"+str(tox.self_get_address())
+    text+="\n" +"milisia-tuntox adresi"
+    text+="\n"+str(tuntox.self_get_address())
     
     return web.Response(body=text.encode('utf-8'))
 
@@ -64,16 +74,19 @@ def komutar(komut):
 @asyncio.coroutine
 def listFiles(request):
 	global tox
-	durum="xxx"
+	durum=""
 	text=""
 	toxid = request.match_info.get('toxid')
-	port = request.match_info.get('port')
-	lport = request.match_info.get('lport')
+	#port  = request.match_info.get('port')
+	#lport = request.match_info.get('lport')
+	port =33999 
+	lport=random.randrange(38000,40000)
 	komut="./tuntox -i "+str(toxid)+" -L "+str(lport)+":127.0.0.1:"+str(port)
 	print ("dugumler arası tunel acılıyor.")
-	open("yenidugum","w").write(toxid)
+	#tunel id kaydetmek için-şu an iptal
+	#open("yenidugum","w").write(toxid)
 	durum=yield from komutar(komut)
-	text+="-"+str(durum)
+	text+="http://127.0.0.1:"+str(lport)
 	return web.Response(body=text.encode('utf-8'))
 
 @asyncio.coroutine
@@ -118,7 +131,7 @@ def init(loop):
 	app.router.add_route('GET', '/', root)
 	app.router.add_route('GET', '/sm/{arkadasno}', sendMessage)
 	app.router.add_route('GET', '/df/{arkadasno}', deleteFriend)
-	app.router.add_route('GET', '/lf/{toxid}:{port}:{lport}', listFiles)
+	app.router.add_route('GET', '/lf/{toxid}', listFiles)
 	app.router.add_route('GET', '/flist', flist)
 	srv = yield from loop.create_server(app.make_handler(),'127.0.0.1', 7001)
 	print("Web sunucusu http://127.0.0.1:7001 başlatıldı.")

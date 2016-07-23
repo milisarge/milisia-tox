@@ -45,25 +45,26 @@ def sendMessage(request):
 	text+="-"+str(result)
 	return web.Response(body=text.encode('utf-8'))
 
-@asyncio.coroutine
-def listFiles(request):
-	global tox
-	result="xxx"
-	text=""
-	toxid = request.match_info.get('toxid')
-	port = request.match_info.get('port')
-	lport = request.match_info.get('lport')
-	
-	
-	komut="./tuntox -i "+str(toxid)+" -L "+str(lport)+":127.0.0.1:"+str(port)
-	yield from komutar(komut)
-	text+="-"+str(result)
-	return web.Response(body=text.encode('utf-8'))
 
 @asyncio.coroutine
 def komutar(komut):
 	subprocess.Popen(komut,stdout=subprocess.PIPE,shell=True)
+	print (komut)
 	return True
+
+@asyncio.coroutine
+def listFiles(request):
+	global tox
+	durum="xxx"
+	text=""
+	toxid = request.match_info.get('toxid')
+	port = request.match_info.get('port')
+	lport = request.match_info.get('lport')
+	komut="./tuntox -i "+str(toxid)+" -L "+str(lport)+":127.0.0.1:"+str(port)
+	print ("dugumler arası tunel acılıyor.")
+	durum=yield from komutar(komut)
+	text+="-"+str(durum)
+	return web.Response(body=text.encode('utf-8'))
 
 @asyncio.coroutine
 def deleteFriend(request):

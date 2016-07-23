@@ -942,7 +942,7 @@ class Tox:
         """
         tox_err_friend_send_message = c_int()
         result = Tox.libtoxcore.tox_friend_send_message(self._tox_pointer, c_uint32(friend_number),
-                                                        c_int(message_type), c_char_p(message), c_size_t(len(message)),
+                                                        c_int(message_type), c_char_p(str.encode(message)), c_size_t(len(message)),
                                                         byref(tox_err_friend_send_message))
         tox_err_friend_send_message = tox_err_friend_send_message.value
         if tox_err_friend_send_message == TOX_ERR_FRIEND_SEND_MESSAGE['OK']:

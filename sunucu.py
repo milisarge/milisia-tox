@@ -11,7 +11,7 @@ import time
 from callbacks import *
 from bootstrap import node_generator
 from settings import *
-
+import subprocess
 from aiohttp import web
 
 global tox
@@ -39,13 +39,31 @@ def sendMessage(request):
 	result=""
 	fno = request.match_info.get('arkadasno')
 	text = "Mesaj gönderildi--> {}".format(fno)
-	arkadasno="2"
 	no=int(fno)
 	if tox.friend_get_connection_status(no):
 		result=tox.friend_send_message(no,0,"selam ben milis p2p servisiyim.")
 	text+="-"+str(result)
 	return web.Response(body=text.encode('utf-8'))
 
+@asyncio.coroutine
+def listFiles(request):
+	global tox
+	result="xxx"
+	text=""
+	toxid = request.match_info.get('toxid')
+	port = request.match_info.get('port')
+	lport = request.match_info.get('lport')
+	
+	
+	komut="./tuntox -i "+str(toxid)+" -L "+str(lport)+":127.0.0.1:"+str(port)
+	yield from komutar(komut)
+	text+="-"+str(result)
+	return web.Response(body=text.encode('utf-8'))
+
+@asyncio.coroutine
+def komutar(komut):
+	subprocess.Popen(komut,stdout=subprocess.PIPE,shell=True)
+	return True
 
 @asyncio.coroutine
 def deleteFriend(request):
@@ -89,6 +107,7 @@ def init(loop):
 	app.router.add_route('GET', '/', root)
 	app.router.add_route('GET', '/sm/{arkadasno}', sendMessage)
 	app.router.add_route('GET', '/df/{arkadasno}', deleteFriend)
+	app.router.add_route('GET', '/lf/{toxid}:{port}:{lport}', listFiles)
 	app.router.add_route('GET', '/flist', flist)
 	srv = yield from loop.create_server(app.make_handler(),'127.0.0.1', 7001)
 	print("Web sunucusu http://127.0.0.1:7001 başlatıldı.")

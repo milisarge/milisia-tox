@@ -16,6 +16,7 @@ from aiohttp import web
 #from http.server import BaseHTTPRequestHandler,HTTPServer
 import random
 
+global sayac
 global tox
 if os.path.isfile("profil.tox"): 
     print ("mevcut profil açılıyor.")
@@ -28,6 +29,7 @@ else:
 sonek=str(tox.self_get_address())[0:4]
 
 global tuntox
+tuntox=None
 if os.path.isfile("ozel/tox_save"): 
     print ("tuntox profili açılıyor.")
     tuntox = tox_factory(ProfileHelper.open_profile("ozel/tox_save"))
@@ -37,19 +39,24 @@ else:
 @asyncio.coroutine
 def paysun():
     port=33999
-    komut="cd paylasim && python3 -m http.server "+str(port)
+    komut="cd paylasim && python3 -m http.server "+str(port)+" 2>&1|tee ../paysun.log"
+
     durum=yield from komutar(komut)
     if durum:
        komut="./tuntox -C ozel/ 2>&1|tee tuntox.log"
        durumt=yield from komutar(komut)
-
+    return
 @asyncio.coroutine
 def root(request):
+    global tuntox
     text = "milisia-dugum adresi"
     text+="\n"+str(tox.self_get_address())
     text+="\n" +"milisia-tuntox adresi"
+    if tuntox is None:
+        tuntox = tox_factory(ProfileHelper.open_profile("ozel/tox_save"))
     text+="\n"+str(tuntox.self_get_address())
-    
+    sayac+=1
+    text+="\n"+str(sayac)
     return web.Response(body=text.encode('utf-8'))
 
 @asyncio.coroutine

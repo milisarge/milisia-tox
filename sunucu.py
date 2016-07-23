@@ -13,6 +13,7 @@ from bootstrap import node_generator
 from settings import *
 import subprocess
 from aiohttp import web
+from http.server import BaseHTTPRequestHandler,HTTPServer
 
 global tox
 if os.path.isfile("profil.tox"): 
@@ -25,6 +26,14 @@ else:
     ProfileHelper.save_profile(data)
 sonek=str(tox.self_get_address())[0:4]
 
+@asyncio.coroutine
+def paysun():
+    port=8009
+    komut="cd paylasim && python3 -m http.server "+str(port)
+    durum=yield from komutar(komut)
+    if durum:
+       komut="./tuntox -C ozel/ 2>&1|tee tuntox.log"
+       durumt=yield from komutar(komut)
 
 @asyncio.coroutine
 def root(request):
@@ -62,6 +71,7 @@ def listFiles(request):
 	lport = request.match_info.get('lport')
 	komut="./tuntox -i "+str(toxid)+" -L "+str(lport)+":127.0.0.1:"+str(port)
 	print ("dugumler arası tunel acılıyor.")
+	open("yenidugum","w").write(toxid)
 	durum=yield from komutar(komut)
 	text+="-"+str(durum)
 	return web.Response(body=text.encode('utf-8'))
@@ -123,6 +133,7 @@ def init(loop):
 	tox.self_set_status_message("Milis Toxia")
 	#asyncio.async(toxloop(), loop=loop)
 	asyncio.Task(toxloop())
+	asyncio.Task(paysun())
 	#asyncio.async(toxloop(), loop=loop)
 	return srv
     

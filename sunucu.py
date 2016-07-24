@@ -3,6 +3,8 @@
 # License: GPL v2.
 
 import asyncio
+import jinja2
+import aiohttp_jinja2
 import logging
 import os
 import sys
@@ -48,13 +50,18 @@ def paysun():
 @asyncio.coroutine
 def root(request):
     global tuntox
+    context = {'name': 'Andrew', 'surname': 'Svetlov'}
     text = "milisia-dugum adresi"
     text+="\n"+str(tox.self_get_address())
     text+="\n" +"milisia-tuntox adresi"
     if tuntox is None:
         tuntox = tox_factory(ProfileHelper.open_profile("ozel/tox_save"))
     text+="\n"+str(tuntox.self_get_address())
-    return web.Response(body=text.encode('utf-8'))
+    #return web.Response(body=text.encode('utf-8'))
+    response = aiohttp_jinja2.render_template(
+        "ana.html", request, context)
+    response.headers['Content-Language'] = 'tr'
+    return response
 
 @asyncio.coroutine
 def sendMessage(request):
@@ -137,6 +144,8 @@ def init(loop):
 	app.router.add_route('GET', '/df/{arkadasno}', deleteFriend)
 	app.router.add_route('GET', '/lf/{toxid}', listFiles)
 	app.router.add_route('GET', '/flist', flist)
+	app.router.add_static("/static",'./static')
+	aiohttp_jinja2.setup(app, loader=jinja2.FileSystemLoader('./templates'))
 	srv = yield from loop.create_server(app.make_handler(),'127.0.0.1', 7001)
 	print("Web sunucusu http://127.0.0.1:7001 başlatıldı.")
 	init_callbacks(tox)

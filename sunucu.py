@@ -50,13 +50,14 @@ def paysun():
 @asyncio.coroutine
 def root(request):
     global tuntox
-    context = {'name': 'Andrew', 'surname': 'Svetlov'}
+    context = {}
     text = "milisia-dugum adresi"
-    text+="\n"+str(tox.self_get_address())
-    text+="\n" +"milisia-tuntox adresi"
+    text+="<br>"+str(tox.self_get_address())
+    text+="<br>" +"milisia-tuntox adresi"
     if tuntox is None:
         tuntox = tox_factory(ProfileHelper.open_profile("ozel/tox_save"))
-    text+="\n"+str(tuntox.self_get_address())
+    text+="<br>"+str(tuntox.self_get_address())
+    context = {'data': text}
     #return web.Response(body=text.encode('utf-8'))
     response = aiohttp_jinja2.render_template(
         "ana.html", request, context)

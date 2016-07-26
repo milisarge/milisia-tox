@@ -1,6 +1,6 @@
 <html xml:lang="tr" lang="tr" xmlns="http://www.w3.org/1999/xhtml">
 <head>
-<title>MİLİSİA - MİLİS İLETİŞİM AĞI</title>
+<title>MİLİSİA - DOSYA PAYLAŞIM SAHASI</title>
 <meta http-equiv="content-type" contentType="text/html; charset=UTF-8">
 <link rel="stylesheet" href="/static/css/balloon.min.css">
 <link rel="stylesheet" href="./static/bootstrap/css/bootstrap.min.css" />
@@ -13,7 +13,7 @@
 	<div class="ustpanel">
 		<div data-balloon="Ana Menü" data-balloon-pos="down" class="col-xs-1"><a href="/"><h3><span class="glyphicon glyphicon-home siyah"></span></h3></a></div>
 		<div data-balloon="Düğüm Listesi" data-balloon-pos="down" class="col-xs-1"><a href="/dugumler"><h3><span class="glyphicon glyphicon-th-list siyah"></span></h3></a></div>
-		<div data-balloon="Dosya Paylaşımı" data-balloon-pos="down" class="col-xs-1"><a href="/dps"><h3><span class="glyphicon glyphicon-cloud-download siyah"></span></h3></a></div>
+		<div data-balloon="Dosya Paylaşımı" data-balloon-pos="down" class="col-xs-1"><a href="/dosya"><h3><span class="glyphicon glyphicon-cloud-download siyah"></span></h3></a></div>
 		<div data-balloon="Mesajlaşma" data-balloon-pos="down" class="col-xs-1"><a href="/mesajlasma"><h3><span class="glyphicon glyphicon-comment siyah"></span></h3></a></div>
 		<div data-balloon="Servis Durumu" data-balloon-pos="down"  class="col-xs-1"><a href="/durum"><h3><span class="glyphicon glyphicon-info-sign siyah"></span></h3></a></div>
 		<div data-balloon="Milisia Güncelle" data-balloon-pos="down" class="col-xs-1"><a href="/guncelle"><h3><span class="glyphicon glyphicon-refresh siyah"></span></h3></a></div>
@@ -25,7 +25,10 @@
 	<br>
 	<br>
 	<br>
-	<h5 class="siyah">{{data}}</h5>
+	<div class=element>
+		<label style="width:200px;margin-top: 10px;">BAĞLANTI ADRESİ</label>
+		<input type=text id=kdugum class="form-control" name=kdugum ondblclick=this.value='' tabindex="-1" style="width:500px;margin-top: 10px;"/>
+	</div>
 </div>
 </body>
 </HTML>

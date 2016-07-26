@@ -18,7 +18,8 @@ from aiohttp import web
 #from http.server import BaseHTTPRequestHandler,HTTPServer
 import random
 
-kodsayfasi='iso-8859_9'
+kodsayfasi="iso-8859_9"
+lokalhost="http://127.0.0.1"
 global tox
 
 if os.path.isfile("profil.tox"): 
@@ -60,7 +61,6 @@ def root(request):
         tuntox = tox_factory(ProfileHelper.open_profile("ozel/tox_save"))
     text+="<br>"+str(tuntox.self_get_address())
     context = {'data': text}
-    #return web.Response(body=text.encode('utf-8'))
     response = aiohttp_jinja2.render_template(
         "ana.html", request, context)
     response.headers['Content-Language'] = 'tr'
@@ -89,7 +89,6 @@ def komutar(komut):
 def listFiles(request):
 	global tox
 	durum=""
-	text=""
 	toxid = request.match_info.get('toxid')
 	#port  = request.match_info.get('port')
 	#lport = request.match_info.get('lport')
@@ -100,8 +99,24 @@ def listFiles(request):
 	#tunel id kaydetmek için-şu an iptal
 	#open("yenidugum","w").write(toxid)
 	durum=yield from komutar(komut)
-	text+="http://127.0.0.1:"+str(lport)
-	return web.Response(body=text.encode('utf-8'))
+	link=lokalhost+":"+str(lport)
+	context = {'data': link}
+	response = aiohttp_jinja2.render_template("pano.html", request, context)
+	response.headers['Content-Language'] = 'tr'
+	return response
+
+#dosya paylasim modulu
+@asyncio.coroutine
+def dps(request):
+	global tox
+	data=""
+	if request.method =="POST":
+		print("---",request["kdugum"])
+	
+	context = {'data': data}
+	response = aiohttp_jinja2.render_template("dps.html", request, context)
+	response.headers['Content-Language'] = 'tr'
+	return response
 
 @asyncio.coroutine
 def deleteFriend(request):
@@ -116,9 +131,12 @@ def deleteFriend(request):
 	text+="-"+str(result)
 	return web.Response(body=text.encode('utf-8'))
 
+
+
 @asyncio.coroutine
 def guncelle(request):
-	os.system("git pull > guncelleme.log")
+	komut="git pull > guncelleme.log"
+	durum=yield from komutar(komut)
 	log=open("guncelleme.log","r").read()
 	loghtml="<html>güncellendi:<p>"+log+"<p><a href='/'>ana sayfa</a> </html>"
 	return web.Response(body=loghtml.encode(kodsayfasi))
@@ -155,6 +173,7 @@ def init(loop):
 	app.router.add_route('GET', '/lf/{toxid}', listFiles)
 	app.router.add_route('GET', '/flist', flist)
 	app.router.add_route('GET', '/guncelle', guncelle)
+	app.router.add_route('GET', '/dps', dps)
 	app.router.add_static("/static",'./static')
 	aiohttp_jinja2.setup(app, loader=jinja2.FileSystemLoader('./templates'))
 	srv = yield from loop.create_server(app.make_handler(),'127.0.0.1', 7001)

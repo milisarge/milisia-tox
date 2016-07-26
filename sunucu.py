@@ -131,20 +131,6 @@ def deleteFriend(request):
 	text+="-"+str(result)
 	return web.Response(body=text.encode('utf-8'))
 
-@asyncio.coroutine
-def wshandler(request):
-    ws = web.WebSocketResponse()
-    await ws.prepare(request)
-
-    async for msg in ws:
-        if msg.tp == web.MsgType.text:
-            ws.send_str("merhaba, {}".format(msg.data))
-        elif msg.tp == web.MsgType.binary:
-            ws.send_bytes(msg.data)
-        elif msg.tp == web.MsgType.close:
-            break
-
-    return ws
 
 @asyncio.coroutine
 def guncelle(request):

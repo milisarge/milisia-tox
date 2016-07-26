@@ -1,18 +1,31 @@
-<!DOCTYPE html>
-<html>
+<html xml:lang="tr" lang="tr" xmlns="http://www.w3.org/1999/xhtml">
 <head>
-   <title>MİLİSİA - MİLİS İLETİŞİM AĞI</title>
-   <link href="/static/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-   <link href="/static/bootstrap/css/styles.css" rel="stylesheet">
-   <script src="/static/jquery.min.js"></script>
-   <script src="/static/bootstrap/js/bootstrap.min.js"></script>
+<title>MİLİSİA - MİLİS İLETİŞİM AĞI</title>
+<meta http-equiv="content-type" contentType="text/html; charset=UTF-8">
+<link rel="stylesheet" href="/static/css/balloon.min.css">
+<link rel="stylesheet" href="./static/bootstrap/css/bootstrap.min.css" />
+<link rel="stylesheet" href="./static/bootstrap/css/styles.css" />
+<script src="../static/jquery.min.js"></script>
 </head>
-<body>
-	
-<h2 style="color:white;">MİLİSİA - MİLİS İLETİŞİM AĞI</h2>
-	<h5 style="color:white;">{{data}}</h5>
-	<a href="/flist" class = "list-group-item">KAYITLI DUGUMLER</a><p>
-	<a href="/" class = "list-group-item">ANASAYFA</a>  
-	
+
+<body> 
+<div class=anasablon>
+	<div class="ustpanel">
+		<div data-balloon="Ana Menü" data-balloon-pos="down" class="col-xs-1"><a href="/"><h3><span class="glyphicon glyphicon-home siyah"></span></h3></a></div>
+		<div data-balloon="Düğüm Listesi" data-balloon-pos="down" class="col-xs-1"><a href="/dugumler"><h3><span class="glyphicon glyphicon-th-list siyah"></span></h3></a></div>
+		<div data-balloon="Dosya Paylaşımı" data-balloon-pos="down" class="col-xs-1"><a href="/dosya"><h3><span class="glyphicon glyphicon-cloud-download siyah"></span></h3></a></div>
+		<div data-balloon="Mesajlaşma" data-balloon-pos="down" class="col-xs-1"><a href="/mesajlasma"><h3><span class="glyphicon glyphicon-comment siyah"></span></h3></a></div>
+		<div data-balloon="Servis Durumu" data-balloon-pos="down"  class="col-xs-1"><a href="/durum"><h3><span class="glyphicon glyphicon-info-sign siyah"></span></h3></a></div>
+		<div data-balloon="Milisia Güncelle" data-balloon-pos="down" class="col-xs-1"><a href="/guncelle"><h3><span class="glyphicon glyphicon-refresh siyah"></span></h3></a></div>
+		<div data-balloon="Milisia Durdur" data-balloon-pos="down" class="col-xs-1"><a href="/cikis"><h3><span class="glyphicon glyphicon-remove siyah"></span></h3></a></div>
+		<span class="col-xs-12"></span>
+		<br>
+	</div>
+	<br>
+	<br>
+	<br>
+	<br>
+	<h5 class="siyah">{{data}}</h5>
+</div>
 </body>
-</html>
+</HTML>

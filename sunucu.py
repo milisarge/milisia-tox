@@ -18,7 +18,9 @@ from aiohttp import web
 #from http.server import BaseHTTPRequestHandler,HTTPServer
 import random
 
+kodsayfasi='iso-8859_9'
 global tox
+
 if os.path.isfile("profil.tox"): 
     print ("mevcut profil açılıyor.")
     tox = tox_factory(ProfileHelper.open_profile("profil.tox"))
@@ -115,13 +117,20 @@ def deleteFriend(request):
 	return web.Response(body=text.encode('utf-8'))
 
 @asyncio.coroutine
+def guncelle(request):
+	os.system("git pull > guncelleme.log")
+	log=open("guncelleme.log","r").read()
+	loghtml="<html>güncellendi:<p>"+log+"<p><a href='/'>ana sayfa</a> </html>"
+	return web.Response(body=loghtml.encode(kodsayfasi))
+
+@asyncio.coroutine
 def flist(request):
 	global tox
 	text=""
 	for num in tox.self_get_friend_list():
 		text+=str(num)+"-"+tox.friend_get_name(tox.self_get_friend_list()[num])+"\n"
 	return web.Response(body=text.encode('utf-8'))
- 
+
 @asyncio.coroutine
 def toxloop():
 	global tox
@@ -145,6 +154,7 @@ def init(loop):
 	app.router.add_route('GET', '/df/{arkadasno}', deleteFriend)
 	app.router.add_route('GET', '/lf/{toxid}', listFiles)
 	app.router.add_route('GET', '/flist', flist)
+	app.router.add_route('GET', '/guncelle', guncelle)
 	app.router.add_static("/static",'./static')
 	aiohttp_jinja2.setup(app, loader=jinja2.FileSystemLoader('./templates'))
 	srv = yield from loop.create_server(app.make_handler(),'127.0.0.1', 7001)

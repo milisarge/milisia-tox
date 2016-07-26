@@ -2,12 +2,98 @@
 <head>
 <title>MİLİSİA - DOSYA PAYLAŞIM SAHASI</title>
 <meta http-equiv="content-type" contentType="text/html; charset=UTF-8">
+<script src="../static/jquery.js"></script>
+<script src="../static/jquery.min.js"></script>
+<script src="../static/js/jquery-ui.js"></script>
+<script src="../static/js/jquery.form.min.js"></script>
+<script src="../static/js/jquery.tablesorter.min.js"></script>
+<script src="../static/js/jquery.blockUI.js"></script>
+<script src="../static/js/shortcut.js"></script>
 <link rel="stylesheet" href="/static/css/balloon.min.css">
 <link rel="stylesheet" href="./static/bootstrap/css/bootstrap.min.css" />
 <link rel="stylesheet" href="./static/bootstrap/css/styles.css" />
-<script src="../static/jquery.min.js"></script>
-</head>
-
+<script>
+	$(document).ready(function() {
+		$('#baglan').on('click', function(event){
+			event.preventDefault();
+			var formOption = {
+				url  : "/dps_baglan",
+				type : 'POST',
+				success: function (url) {
+					if(url=='hata'){
+						hataGoster(url);
+					}else{
+						//yonlendir adresi
+						var win = window.open(url, '_blank');
+					}
+				}
+			};
+			$('#raporForm').ajaxSubmit(formOption);
+		});
+	});
+	function islemTamam(message) {
+		// TODO: hata mesajı dön
+		$.blockUI({ 
+            message: message, 
+            fadeIn: 500, 
+            fadeOut: 500, 
+            timeout: 2000, 
+            showOverlay: false, 
+            centerY: false, 
+            css: { 
+                width: '550px',
+                top: '6px', 
+                left: '', 
+                right: '100px', 
+                border: 'none', 
+                padding: '10px', 
+                backgroundColor: '#080', 
+                '-webkit-border-radius': '6px', 
+                '-moz-border-radius': '6px', 
+                'border-radius': '6px',
+                opacity: .6, 
+            	'font-style': 'italic',
+	        	'font-weight': 'normal',
+	        	'font-family': 'Georgia, "Times New Roman", Times, serif',
+	        	'font-size': '16px',
+	        	color: '#fff'
+            }
+        });
+	}
+	
+	function hataGoster(message) {
+		
+		console.log("HATA:" + message);
+		$.blockUI({ 
+            message: message, 
+            fadeIn: 500, 
+            fadeOut: 500, 
+            timeout: 2000, 
+            showOverlay: false, 
+            centerY: false, 
+            css: { 
+                width: '550px',
+                top: '6px', 
+                left: '', 
+                right: '100px', 
+                border: 'none', 
+                padding: '10px', 
+                backgroundColor: '#900', 
+                '-webkit-border-radius': '6px', 
+                '-moz-border-radius': '6px', 
+                'border-radius': '6px',
+                opacity: .6, 
+            	'font-style': 'italic',
+	        	'font-weight': 'normal',
+	        	'font-family': 'Georgia, "Times New Roman", Times, serif',
+	        	'font-size': '16px',
+	        	color: '#fff',
+                
+            }
+        });
+	}
+</script>
+</head>		
 <body> 
 <div class=anasablon>
 	<div class="ustpanel">
@@ -25,10 +111,13 @@
 	<br>
 	<br>
 	<br>
-	<div class=element>
-		<label style="width:200px;margin-top: 10px;">BAĞLANTI ADRESİ</label>
-		<input type=text id=kdugum class="form-control" name=kdugum ondblclick=this.value='' tabindex="-1" style="width:500px;margin-top: 10px;"/>
-	</div>
+	<form id=raporForm name=raporForm action="/dps" method=post>
+		<div class=element>
+			<label style="width:200px;margin-top: 10px;">BAĞLANTI ADRESİ</label>
+			<input type=text id=kdugum class="form-control" name=kdugum ondblclick=this.value='' tabindex="-1" style="width:500px;margin-top: 10px;"/>
+		</div><br>
+		<div class=element><input type="submit" class="btn" name="baglan" id="baglan" value="BAĞLAN" tabindex="-1" /></div>
+	</form>
 </div>
 </body>
 </HTML>

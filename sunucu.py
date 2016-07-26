@@ -4,6 +4,7 @@
 
 import asyncio
 import jinja2
+import aiohttp
 import aiohttp_jinja2
 import logging
 import os
@@ -15,6 +16,8 @@ from bootstrap import node_generator
 from settings import *
 import subprocess
 from aiohttp import web
+from aiohttp.web import Application, Response
+import json
 #from http.server import BaseHTTPRequestHandler,HTTPServer
 import random
 
@@ -110,13 +113,31 @@ def listFiles(request):
 def dps(request):
 	global tox
 	data=""
-	if request.method =="POST":
-		print("---",request["kdugum"])
-	
+	print(request.method)
 	context = {'data': data}
 	response = aiohttp_jinja2.render_template("dps.html", request, context)
 	response.headers['Content-Language'] = 'tr'
 	return response
+	
+#dps_baglantisi döndürmek
+@asyncio.coroutine
+def dps_baglan(request):
+	link=""
+	global tox
+	durum=""
+	data = yield from request.post()
+	toxid = data['kdugum']
+	print (toxid)
+	port =33999 
+	lport=random.randrange(38000,40000)
+	komut="./tuntox -i "+str(toxid)+" -L "+str(lport)+":127.0.0.1:"+str(port)
+	print ("dugumler arası tunel acılıyor.")
+	#tunel id kaydetmek için-şu an iptal
+	#open("yenidugum","w").write(toxid)
+	durum=yield from komutar(komut)
+	link=lokalhost+":"+str(lport)
+	return web.json_response(data=link)
+	
 
 @asyncio.coroutine
 def deleteFriend(request):
@@ -146,7 +167,7 @@ def flist(request):
 	text=""
 	for num in tox.self_get_friend_list():
 		text+=str(num)+"-"+tox.friend_get_name(tox.self_get_friend_list()[num])+"\n"
-	return web.Response(body=text.encode('utf-8'))
+	return Response(text.encode('utf-8'))
 
 @asyncio.coroutine
 def toxloop():
@@ -171,6 +192,7 @@ def init(loop):
 	app.router.add_route('GET', '/df/{arkadasno}', deleteFriend)
 	app.router.add_route('GET', '/lf/{toxid}', listFiles)
 	app.router.add_route('GET', '/flist', flist)
+	app.router.add_route('POST', '/dps_baglan', dps_baglan)
 	app.router.add_route('GET', '/guncelle', guncelle)
 	app.router.add_route('GET', '/dps', dps)
 	app.router.add_static("/static",'./static')

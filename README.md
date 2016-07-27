@@ -20,3 +20,12 @@ pip3 install aiohttp
 ctrl+c
 
 ./sunucu.sh
+
+
+Debian'dan çalıştırmak için:
+
+https://pkg.tox.chat/debian/pool/jessie/libt/libtoxcore/ adresinden ilgili paketler kurulur.
+
+https://github.com/gjedeer/tuntox/releases  adresinden ilgili tuntox ikilisi milisia dizinine atılır.
+
+./sunucu.sh

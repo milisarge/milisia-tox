@@ -1,5 +1,8 @@
 mkdir -p ozel
 mkdir -p paylasim
+if [ ! -f mesaj.log ];then
+	touch mesaj.log
+fi
 if [ "$1" == "-r" ] ; then
 	rm -rf ozel/tox_save
 	rm -rf profil.tox

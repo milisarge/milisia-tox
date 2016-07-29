@@ -123,7 +123,8 @@ def dps(request):
 @asyncio.coroutine
 def mesajlasma(request):
 	global tox
-	data="mesaj"
+	data=""
+	data=open("mesaj.log","r").read()
 	context = {'data': data}
 	response = aiohttp_jinja2.render_template("mesajlasma.html", request, context)
 	response.headers['Content-Language'] = 'tr'
@@ -172,12 +173,12 @@ def guncelle(request):
 	return web.Response(body=loghtml.encode(kodsayfasi))
 
 @asyncio.coroutine
-def flist(request):
+def dugumler(request):
 	global tox
 	text=""
 	for num in tox.self_get_friend_list():
 		text+=str(num)+"-"+tox.friend_get_name(tox.self_get_friend_list()[num])+"\n"
-	return Response(text.encode('utf-8'))
+	return web.Response(body=text.encode(kodsayfasi))
 
 @asyncio.coroutine
 def toxloop():
@@ -201,7 +202,7 @@ def init(loop):
 	app.router.add_route('GET', '/sm/{arkadasno}', sendMessage)
 	app.router.add_route('GET', '/df/{arkadasno}', deleteFriend)
 	app.router.add_route('GET', '/lf/{toxid}', listFiles)
-	app.router.add_route('GET', '/flist', flist)
+	app.router.add_route('GET', '/dugumler', dugumler)
 	app.router.add_route('POST', '/dps_baglan', dps_baglan)
 	app.router.add_route('GET', '/guncelle', guncelle)
 	app.router.add_route('GET', '/dps', dps)

@@ -84,10 +84,7 @@ def friend_message():
     """
     def wrapped(tox, friend_number, message_type, message, size, user_data):
         print(message.decode('utf-8'))
-        #Bot.get_instance().new_message(friend_number, message.decode('utf-8'))
-        #Bota.new_message(Bota,friend_number, message.decode('utf-8'))
-        #Bot.new_message(friend_number, message.decode('utf-8'))
-        # parse message
+        open("mesaj.log","w").write(str(friend_number)+":"+message.decode('utf-8'))
     return wrapped
 
 

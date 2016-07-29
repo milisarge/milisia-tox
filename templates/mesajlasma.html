@@ -1,0 +1,124 @@
+<html xml:lang="tr" lang="tr" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>MİLİSİA - MESAJLASMA</title>
+<meta http-equiv="content-type" contentType="text/html; charset=UTF-8">
+<script src="../static/jquery.js"></script>
+<script src="../static/jquery.min.js"></script>
+<script src="../static/js/jquery-ui.js"></script>
+<script src="../static/js/jquery.form.min.js"></script>
+<script src="../static/js/jquery.tablesorter.min.js"></script>
+<script src="../static/js/jquery.blockUI.js"></script>
+<script src="../static/js/shortcut.js"></script>
+<link rel="stylesheet" href="/static/css/balloon.min.css">
+<link rel="stylesheet" href="./static/bootstrap/css/bootstrap.min.css" />
+<link rel="stylesheet" href="./static/bootstrap/css/styles.css" />
+<script>
+	$(document).ready(function() {
+		$('#baglan').on('click', function(event){
+			event.preventDefault();
+			var formOption = {
+				url  : "/dps_baglan",
+				type : 'POST',
+				success: function (url) {
+					if(url=='hata'){
+						hataGoster(url);
+					}else{
+						//yonlendir adresi
+						var win = window.open(url, '_blank');
+					}
+				}
+			};
+			$('#raporForm').ajaxSubmit(formOption);
+		});
+	});
+	function islemTamam(message) {
+		// TODO: hata mesajı dön
+		$.blockUI({ 
+            message: message, 
+            fadeIn: 500, 
+            fadeOut: 500, 
+            timeout: 2000, 
+            showOverlay: false, 
+            centerY: false, 
+            css: { 
+                width: '550px',
+                top: '6px', 
+                left: '', 
+                right: '100px', 
+                border: 'none', 
+                padding: '10px', 
+                backgroundColor: '#080', 
+                '-webkit-border-radius': '6px', 
+                '-moz-border-radius': '6px', 
+                'border-radius': '6px',
+                opacity: .6, 
+            	'font-style': 'italic',
+	        	'font-weight': 'normal',
+	        	'font-family': 'Georgia, "Times New Roman", Times, serif',
+	        	'font-size': '16px',
+	        	color: '#fff'
+            }
+        });
+	}
+	
+	function hataGoster(message) {
+		
+		console.log("HATA:" + message);
+		$.blockUI({ 
+            message: message, 
+            fadeIn: 500, 
+            fadeOut: 500, 
+            timeout: 2000, 
+            showOverlay: false, 
+            centerY: false, 
+            css: { 
+                width: '550px',
+                top: '6px', 
+                left: '', 
+                right: '100px', 
+                border: 'none', 
+                padding: '10px', 
+                backgroundColor: '#900', 
+                '-webkit-border-radius': '6px', 
+                '-moz-border-radius': '6px', 
+                'border-radius': '6px',
+                opacity: .6, 
+            	'font-style': 'italic',
+	        	'font-weight': 'normal',
+	        	'font-family': 'Georgia, "Times New Roman", Times, serif',
+	        	'font-size': '16px',
+	        	color: '#fff',
+                
+            }
+        });
+	}
+</script>
+</head>		
+<body> 
+<div class=anasablon>
+	<div class="ustpanel">
+		<div data-balloon="Ana Menü" data-balloon-pos="down" class="col-xs-1"><a href="/"><h3><span class="glyphicon glyphicon-home siyah"></span></h3></a></div>
+		<div data-balloon="Düğüm Listesi" data-balloon-pos="down" class="col-xs-1"><a href="/dugumler"><h3><span class="glyphicon glyphicon-th-list siyah"></span></h3></a></div>
+		<div data-balloon="Dosya Paylaşımı" data-balloon-pos="down" class="col-xs-1"><a href="/dosya"><h3><span class="glyphicon glyphicon-cloud-download siyah"></span></h3></a></div>
+		<div data-balloon="Mesajlaşma" data-balloon-pos="down" class="col-xs-1"><a href="/mesajlasma"><h3><span class="glyphicon glyphicon-comment siyah"></span></h3></a></div>
+		<div data-balloon="Servis Durumu" data-balloon-pos="down"  class="col-xs-1"><a href="/durum"><h3><span class="glyphicon glyphicon-info-sign siyah"></span></h3></a></div>
+		<div data-balloon="Milisia Güncelle" data-balloon-pos="down" class="col-xs-1"><a href="/guncelle"><h3><span class="glyphicon glyphicon-refresh siyah"></span></h3></a></div>
+		<div data-balloon="Milisia Durdur" data-balloon-pos="down" class="col-xs-1"><a href="/cikis"><h3><span class="glyphicon glyphicon-remove siyah"></span></h3></a></div>
+		<span class="col-xs-12"></span>
+		<br>
+	</div>
+	<br>
+	<br>
+	<br>
+	<br>
+	<form id=raporForm name=raporForm action="/mesajlasma" method=post>
+		<div class=element>
+			<label style="width:200px;margin-top: 10px;">mesaj panosu</label><p>
+			<label style="width:200px;margin-top: 10px;">{{data}}</label>
+			
+		</div><br>
+		<div class=element><input type="submit" class="btn" name="gonder" id="gonder" value="Gönder" tabindex="-1" /></div>
+	</form>
+</div>
+</body>
+</HTML>

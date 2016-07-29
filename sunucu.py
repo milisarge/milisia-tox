@@ -118,6 +118,16 @@ def dps(request):
 	response = aiohttp_jinja2.render_template("dps.html", request, context)
 	response.headers['Content-Language'] = 'tr'
 	return response
+
+#mesajlasma modulu
+@asyncio.coroutine
+def mesajlasma(request):
+	global tox
+	data="mesaj"
+	context = {'data': data}
+	response = aiohttp_jinja2.render_template("mesajlasma.html", request, context)
+	response.headers['Content-Language'] = 'tr'
+	return response
 	
 #dps_baglantisi döndürmek
 @asyncio.coroutine
@@ -195,6 +205,7 @@ def init(loop):
 	app.router.add_route('POST', '/dps_baglan', dps_baglan)
 	app.router.add_route('GET', '/guncelle', guncelle)
 	app.router.add_route('GET', '/dps', dps)
+	app.router.add_route('GET', '/mesajlasma', mesajlasma)
 	app.router.add_static("/static",'./static')
 	aiohttp_jinja2.setup(app, loader=jinja2.FileSystemLoader('./templates'))
 	srv = yield from loop.create_server(app.make_handler(),'127.0.0.1', 7001)

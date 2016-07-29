@@ -46,12 +46,14 @@ else:
 @asyncio.coroutine
 def paysun():
     port=33999
-    komut="cd paylasim && python3 -m http.server "+str(port)+" 2>&1|tee ../paysun.log"
+    komut="cd paylasim && python3 -m http.server "+str(port)+" 2>&1|tee ../paysun.log &"
 
     durum=yield from komutar(komut)
+    
     if durum:
-       komut="./tuntox -C ozel/ 2>&1|tee tuntox.log"
+       komut="./tuntox -C ozel/ 2>&1|tee tuntox.log &"
        durumt=yield from komutar(komut)
+    
     return
 @asyncio.coroutine
 def root(request):
@@ -61,8 +63,10 @@ def root(request):
     text+="<br>"+str(tox.self_get_address())
     text+="<br>" +"milisia-tuntox adresi"
     if tuntox is None:
-        tuntox = tox_factory(ProfileHelper.open_profile("ozel/tox_save"))
-    text+="<br>"+str(tuntox.self_get_address())
+        if(os.path.isfile("ozel/tox_save")):
+            tuntox = tox_factory(ProfileHelper.open_profile("ozel/tox_save"))
+    else:
+	    text+="<br>"+str(tuntox.self_get_address())
     context = {'data': text}
     response = aiohttp_jinja2.render_template(
         "ana.html", request, context)
@@ -216,14 +220,10 @@ def init(loop):
 	print ("bootstrap dugumlerine baglanıyor...")
 	for data in node_generator():
 		tox.bootstrap(*data)
-	settings = Settings()
-	#profile = Bot(tox)
 	tox.self_set_name("milis-toxia-"+sonek)
 	tox.self_set_status_message("Milis Toxia")
-	#asyncio.async(toxloop(), loop=loop)
 	asyncio.Task(toxloop())
 	asyncio.Task(paysun())
-	#asyncio.async(toxloop(), loop=loop)
 	return srv
     
 loop = asyncio.get_event_loop()

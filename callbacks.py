@@ -5,7 +5,7 @@ from toxcore_enums_and_consts import *
 from ctypes import *
 #from bot import Bot as Bota
 from tox import bin_to_string
-
+from datetime import datetime
 
 def tox_factory(data=None, settings=None):
     """
@@ -84,7 +84,7 @@ def friend_message():
     """
     def wrapped(tox, friend_number, message_type, message, size, user_data):
         print(message.decode('utf-8'))
-        open("mesaj.log","w").write(str(friend_number)+":"+message.decode('utf-8'))
+        open("mesaj.log","a").write(str(datetime.now())+"-"+str(friend_number)+":"+message.decode('utf-8'))
     return wrapped
 
 

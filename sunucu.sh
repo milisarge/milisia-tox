@@ -1,5 +1,6 @@
 mkdir -p ozel
 mkdir -p paylasim
+killall tuntox
 if [ ! -f mesaj.log ];then
 	touch mesaj.log
 fi
